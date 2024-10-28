@@ -52,7 +52,7 @@ public class SpotifyController {
                 "?client_id=" + clientId +
                 "&response_type=code" +
                 "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8) +
-                "&scope=user-read-recently-played"; // Add any necessary scopes
+                "&scope=user-read-recently-played%20user-top-read"; // Add any necessary scopes
         logger.info("Authorization URL: " + authorizationUrl);
         return new RedirectView(authorizationUrl);
     }
@@ -100,6 +100,7 @@ public class SpotifyController {
         // Fetch the last played track using the access token
         spotifyService.fetchRecentlyPlayedTracks(accessToken);
         SpotifyTrack lastPlayedTrack = spotifyService.getLastPlayedTrack(accessToken);
+        List<SpotifyTrack> userTopTracksShortTerm = spotifyService.getLast50PlayedSongs(accessToken);
         if (lastPlayedTrack != null) {
             return lastPlayedTrack.toString();
         } else {
