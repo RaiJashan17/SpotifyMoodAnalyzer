@@ -2,6 +2,7 @@ package com.raij.SpotifyMoodAnalyzer.controller;
 
 import com.raij.SpotifyMoodAnalyzer.model.SpotifyTokenResponse;
 import com.raij.SpotifyMoodAnalyzer.model.SpotifyTrack;
+import com.raij.SpotifyMoodAnalyzer.model.SpotifyTrackTopSongs;
 import com.raij.SpotifyMoodAnalyzer.service.SpotifyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,9 +99,10 @@ public class SpotifyController {
     @GetMapping("/home")
     public String home() {
         // Fetch the last played track using the access token
-        spotifyService.fetchRecentlyPlayedTracks(accessToken);
+        //spotifyService.fetchRecentlyPlayedTracks(accessToken);
+        List<SpotifyTrackTopSongs> topTrackShortTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
         SpotifyTrack lastPlayedTrack = spotifyService.getLastPlayedTrack(accessToken);
-        List<SpotifyTrack> userTopTracksShortTerm = spotifyService.getLast50PlayedSongs(accessToken);
+        //List<SpotifyTrack> userTopTracksShortTerm = spotifyService.getLast50PlayedSongs(accessToken);
         if (lastPlayedTrack != null) {
             return lastPlayedTrack.toString();
         } else {
