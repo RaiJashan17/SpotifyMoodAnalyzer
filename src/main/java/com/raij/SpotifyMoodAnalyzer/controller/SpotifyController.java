@@ -1,5 +1,6 @@
 package com.raij.SpotifyMoodAnalyzer.controller;
 
+import com.raij.SpotifyMoodAnalyzer.model.SongFeatures;
 import com.raij.SpotifyMoodAnalyzer.model.SpotifyTokenResponse;
 import com.raij.SpotifyMoodAnalyzer.model.SpotifyTrack;
 import com.raij.SpotifyMoodAnalyzer.model.SpotifyTrackTopSongs;
@@ -102,6 +103,7 @@ public class SpotifyController {
         //spotifyService.fetchRecentlyPlayedTracks(accessToken);
         List<SpotifyTrackTopSongs> topTrackShortTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
         SpotifyTrack lastPlayedTrack = spotifyService.getLastPlayedTrack(accessToken);
+        SongFeatures songFeatures = spotifyService.getSongFeatures(accessToken, lastPlayedTrack);
         //List<SpotifyTrack> userTopTracksShortTerm = spotifyService.getLast50PlayedSongs(accessToken);
         if (lastPlayedTrack != null) {
             return lastPlayedTrack.toString();

@@ -242,4 +242,25 @@ public class SpotifyService {
 
         return null; // Handle cases where no track is found
     }
+
+    public SongFeatures getSongFeatures(String accessToken, SpotifyTrack spotifyTrack){
+
+        String apiUrl = "https://api.spotify.com/v1/audio-features/" + spotifyTrack.getId();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<SongFeatures> responseEntity = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.GET,
+                entity,
+                SongFeatures.class
+        );
+
+        // Log the status code and body
+        logger.info("Response Status Code: {}", responseEntity.getStatusCode());
+        logger.info(responseEntity.getBody().toString());
+    return responseEntity.getBody();
+    }
 }
