@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -44,26 +45,29 @@ public class SpotifyController {
     @Value("${spotify.redirect-uri}")
     private String redirectUri;
 
-    private final RestTemplate restTemplate = new RestTemplate();
-
     private String accessToken;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @GetMapping("/login")
     public RedirectView login() {
-        String authorizationUrl = "https://accounts.spotify.com/authorize" +
-                "?client_id=" + clientId +
-                "&response_type=code" +
-                "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8) +
-                "&scope=user-read-recently-played%20user-top-read"; // Add any necessary scopes
-        logger.info("Authorization URL: " + authorizationUrl);
-        return new RedirectView(authorizationUrl);
+        if (accessToken==null) {
+            String authorizationUrl = "https://accounts.spotify.com/authorize" +
+                    "?client_id=" + clientId +
+                    "&response_type=code" +
+                    "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8) +
+                    "&scope=user-read-recently-played%20user-top-read"; // Add any necessary scopes
+            logger.info("Authorization URL: " + authorizationUrl);
+            return new RedirectView(authorizationUrl);
+        }else{
+            return new RedirectView("/done");
+        }
     }
 
     @GetMapping("/callback")
     public RedirectView handleSuccess(@RequestParam("code") String code) {
         logger.info("Reached callback method with code: " + code);
-
-        RestTemplate restTemplate = new RestTemplate();
         String tokenUrl = "https://accounts.spotify.com/api/token"; // Spotify token endpoint
 
         // Set headers for the request
@@ -98,18 +102,13 @@ public class SpotifyController {
     }
 
     @GetMapping("/home")
-    public String home() {
+    public RedirectView home() {
         // Fetch the last played track using the access token
         //spotifyService.fetchRecentlyPlayedTracks(accessToken);
         List<SpotifyTrackTopSongs> topTrackShortTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
-        SpotifyTrack lastPlayedTrack = spotifyService.getLastPlayedTrack(accessToken);
-        SongFeatures songFeatures = spotifyService.getSongFeatures(accessToken, lastPlayedTrack);
+        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackShortTerm);
+        //SpotifyTrack lastPlayedTrack = spotifyService.getLastPlayedTrack(accessToken);
         //List<SpotifyTrack> userTopTracksShortTerm = spotifyService.getLast50PlayedSongs(accessToken);
-        if (lastPlayedTrack != null) {
-            return lastPlayedTrack.toString();
-        } else {
-            return null;
-        }
+        return new RedirectView("/done");
     }
 }
-
