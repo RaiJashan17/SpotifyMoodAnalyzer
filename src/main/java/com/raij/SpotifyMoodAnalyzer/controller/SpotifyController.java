@@ -105,8 +105,9 @@ public class SpotifyController {
     public RedirectView home() {
         // Fetch the last played track using the access token
         //spotifyService.fetchRecentlyPlayedTracks(accessToken);
-        List<SpotifyTrackTopSongs> topTrackShortTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
-        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackShortTerm);
+        List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
+        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
+        SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
         //SpotifyTrack lastPlayedTrack = spotifyService.getLastPlayedTrack(accessToken);
         //List<SpotifyTrack> userTopTracksShortTerm = spotifyService.getLast50PlayedSongs(accessToken);
         return new RedirectView("/done");
