@@ -3,14 +3,19 @@ package com.raij.SpotifyMoodAnalyzer.service;
 import com.raij.SpotifyMoodAnalyzer.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -235,11 +240,89 @@ public class SpotifyService {
             SpotifyTracksResponseTopSongs tracksResponse = responseEntity.getBody();
             if (tracksResponse != null && !tracksResponse.getItems().isEmpty()) {
                 List<SpotifyTrackTopSongs> tracks = tracksResponse.getItems();
-                logger.info(tracks.toString());
+                //logger.info(tracks.toString());
                 return tracks; // Return the complete track object if needed
             }
         }
 
         return null; // Handle cases where no track is found
+    }
+
+    public SongFeatures getOneSongFeatures(String accessToken, SpotifyTrack spotifyTrack){
+
+        String apiUrl = "https://api.spotify.com/v1/audio-features/" + spotifyTrack.getId();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<SongFeatures> responseEntity = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.GET,
+                entity,
+                SongFeatures.class
+        );
+
+        // Log the status code and body
+        logger.info("Response Status Code: {}", responseEntity.getStatusCode());
+        logger.info(responseEntity.getBody().toString());
+    return responseEntity.getBody();
+    }
+
+    public List<SongFeatures> getAllSongFeatures(String accessToken, List<SpotifyTrackTopSongs> spotifyTrackList){
+        List<SongFeatures> songFeaturesList= new ArrayList<>();
+        for(SpotifyTrackTopSongs spotifyTrack: spotifyTrackList){
+            String apiUrl = "https://api.spotify.com/v1/audio-features/" + spotifyTrack.getId();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + accessToken);
+
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<SongFeatures> responseEntity = restTemplate.exchange(
+                    apiUrl,
+                    HttpMethod.GET,
+                    entity,
+                    SongFeatures.class
+            );
+
+            // Log the status code and body
+            //logger.info("Response Status Code: {}", responseEntity.getStatusCode());
+            //logger.info(responseEntity.getBody().toString());
+            songFeaturesList.add(responseEntity.getBody());
+        }
+
+        return songFeaturesList;
+    }
+
+    public SongFeatures averageOfSongFeatures(List<SongFeatures> songFeaturesList){
+        SongFeatures songFeatures = new SongFeatures();
+        Float acousticness = 0F;
+        Float danceability = 0F;
+        Float energy = 0F;
+        Float instrumentalness = 0F;
+        Float liveness = 0F;
+        Float loudness = 0F;
+        Float tempo = 0F;
+        Float valence = 0F;
+        for (SongFeatures songFeature : songFeaturesList){
+            acousticness=acousticness+songFeature.getAcousticness();
+            danceability=danceability+songFeature.getDanceability();
+            energy=energy+songFeature.getEnergy();
+            instrumentalness=instrumentalness+songFeature.getInstrumentalness();
+            liveness=liveness+songFeature.getLiveness();
+            loudness=loudness+songFeature.getLoudness();
+            tempo= tempo+songFeature.getTempo();
+            valence=valence+songFeature.getValence();
+        }
+        songFeatures.setAcousticness(acousticness/songFeaturesList.size());
+        songFeatures.setDanceability(danceability/songFeaturesList.size());
+        songFeatures.setEnergy(energy/songFeaturesList.size());
+        songFeatures.setInstrumentalness(instrumentalness/songFeaturesList.size());
+        songFeatures.setLiveness(liveness/songFeaturesList.size());
+        songFeatures.setLoudness(loudness/songFeaturesList.size());
+        songFeatures.setTempo(tempo/songFeaturesList.size());
+        songFeatures.setValence(valence/songFeaturesList.size());
+        logger.info(songFeatures.toString());
+        return songFeatures;
     }
 }

@@ -2,6 +2,7 @@ package com.raij.SpotifyMoodAnalyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
 public class SpotifyTrackWrapper {
     @JsonProperty("track")
     private SpotifyTrack track;
