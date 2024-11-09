@@ -107,7 +107,7 @@ public class SpotifyController {
         List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
         List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
         SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
-        geminiService.runAIService();
+        geminiService.runAIService(songFeatures, topTrackLongTerm);
         //SpotifyTrack lastPlayedTrack = spotifyService.getLastPlayedTrack(accessToken);
         //List<SpotifyTrack> userTopTracksShortTerm = spotifyService.getLast50PlayedSongs(accessToken);
         return new RedirectView("/done");
