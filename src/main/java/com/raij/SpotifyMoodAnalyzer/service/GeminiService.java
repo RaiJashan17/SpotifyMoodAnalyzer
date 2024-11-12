@@ -59,7 +59,7 @@ public class GeminiService {
                            .setThreshold(SafetySetting.HarmBlockThreshold.OFF)
                            .build()
            );
-           var textsi_1 = "You are a mood analyzer, trying to understand one's emotions. One way you analyze this is through musical statistics. You look through the data and let the user know in plain English since they don't understand the statistics (think therapist format) their mood and why, what they can do to improve their mood and make some music genre recommendations based on what you have.";
+           var textsi_1 = "You are a mood analyzer, trying to understand one's emotions. One way you analyze this is through musical statistics. You look through the data and let the user know in plain English (think therapist format) their mood and why, what they can do to improve their mood and make some music genre recommendations based on what you have.";
            var systemInstruction = ContentMaker.fromMultiModalData(textsi_1);
            GenerativeModel model =
                    new GenerativeModel.Builder()
