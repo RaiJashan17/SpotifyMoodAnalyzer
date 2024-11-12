@@ -2,15 +2,14 @@ package com.raij.SpotifyMoodAnalyzer.controller;
 
 import com.raij.SpotifyMoodAnalyzer.model.SongFeatures;
 import com.raij.SpotifyMoodAnalyzer.model.SpotifyTokenResponse;
-import com.raij.SpotifyMoodAnalyzer.model.SpotifyTrack;
 import com.raij.SpotifyMoodAnalyzer.model.SpotifyTrackTopSongs;
+import com.raij.SpotifyMoodAnalyzer.service.GeminiService;
 import com.raij.SpotifyMoodAnalyzer.service.SpotifyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,13 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.net.URI;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Controller
@@ -35,6 +31,9 @@ public class SpotifyController {
 
     @Autowired
     private SpotifyService spotifyService;
+
+    @Autowired
+    private GeminiService geminiService;
 
     @Value("${spotify.client-id}")
     private String clientId;
@@ -102,12 +101,13 @@ public class SpotifyController {
     }
 
     @GetMapping("/home")
-    public RedirectView home() {
+    public RedirectView home() throws IOException {
         // Fetch the last played track using the access token
         //spotifyService.fetchRecentlyPlayedTracks(accessToken);
         List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
         List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
         SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
+        geminiService.runAIService(songFeatures, topTrackLongTerm);
         //SpotifyTrack lastPlayedTrack = spotifyService.getLastPlayedTrack(accessToken);
         //List<SpotifyTrack> userTopTracksShortTerm = spotifyService.getLast50PlayedSongs(accessToken);
         return new RedirectView("/done");
