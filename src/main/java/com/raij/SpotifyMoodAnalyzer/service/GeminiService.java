@@ -32,7 +32,7 @@ public class GeminiService {
 
     private static final Logger logger = LoggerFactory.getLogger(GeminiService.class);
 
-   public void runAIService(SongFeatures songFeatures, List<SpotifyTrackTopSongs> topTracks) throws IOException {
+   public void runAIService(String text1) throws IOException {
        String generatedText = "";
        try (VertexAI vertexAi = new VertexAI("spotifymoodanaylzer", "us-west1"); ) {
            GenerationConfig generationConfig =
@@ -70,7 +70,6 @@ public class GeminiService {
                            .setSystemInstruction(systemInstruction)
                            .build();
 
-           var text1 = "Over the past year, user's top songs are " + topTracks.get(0).getName() + " by "+ topTracks.get(0).getArtists().get(0) + ", " + topTracks.get(1).getName() + " by "+ topTracks.get(1).getArtists().get(0) + ", " + topTracks.get(2).getName() + " by "+ topTracks.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
 
 
            var content = ContentMaker.fromMultiModalData(text1);
