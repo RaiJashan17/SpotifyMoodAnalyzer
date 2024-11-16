@@ -34,4 +34,4 @@ build/
 
 ### Exclude These Files ###
 recently_played_tracks.json
-/resources
+src/main/resources/application.properties
