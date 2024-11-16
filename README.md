@@ -4,7 +4,7 @@
 The goal of this project is to take a user's Spotify data in the short-term (4 weeks), medium-term (6 months), and long-term (12 months). Using that data, find the averages of the song's features and hand that data over to an AI such as Gemini. The AI will analyze and then report to the user about how their music habits have changed, whether they are happier or sadder, and other features. My inspiration started from Obscurify (https://www.obscurifymusic.com/), but instead of using different users, I want to use AI.
 
 ## Current Progress
-Integrated Gemini, working on finetuning and working on adding some more methods for more comparisons. Considering adding Apache Kafka. 
+Integrated Gemini, working on finetuning and working on adding some more methods for more comparisons such as comparing between terms. Considering adding Apache Kafka and a database to store past user data and use that for more data.
 
 ## Example Output
 **What the data shows:** Your top songs, combined with the overall averages for acousticness, energy, danceability, and valence (a measure of musical positiveness), paint a picture of someone experiencing a blend of melancholic and anxious feelings.
