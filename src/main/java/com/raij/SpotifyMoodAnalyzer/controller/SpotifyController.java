@@ -13,8 +13,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -60,7 +59,7 @@ public class SpotifyController {
             logger.info("Authorization URL: " + authorizationUrl);
             return new RedirectView(authorizationUrl);
         }else{
-            return new RedirectView("/done");
+            return new RedirectView("/home");
         }
     }
 
@@ -101,16 +100,8 @@ public class SpotifyController {
     }
 
     @GetMapping("/home")
-    public RedirectView home() throws IOException {
-        // Fetch the last played track using the access token
-        //spotifyService.fetchRecentlyPlayedTracks(accessToken);
-//        List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
-//        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
-//        SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
-//        geminiService.runAIService(songFeatures, topTrackLongTerm);
-        //SpotifyTrack lastPlayedTrack = spotifyService.getLastPlayedTrack(accessToken);
-        //List<SpotifyTrack> userTopTracksShortTerm = spotifyService.getLast50PlayedSongs(accessToken);
-        return new RedirectView("/done");
+    public String home() {
+        return "home";
     }
 
     @GetMapping("/longterm")
@@ -120,7 +111,7 @@ public class SpotifyController {
         SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
         String text1 = "Over the past year, user's top songs are " + topTrackLongTerm.get(0).getName() + " by "+ topTrackLongTerm.get(0).getArtists().get(0) + ", " + topTrackLongTerm.get(1).getName() + " by "+ topTrackLongTerm.get(1).getArtists().get(0) + ", " + topTrackLongTerm.get(2).getName() + " by "+ topTrackLongTerm.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
         geminiService.runAIService(text1);
-        return new RedirectView("/done");
+        return new RedirectView("/home");
     }
 
     @GetMapping("/mediumterm")
@@ -130,7 +121,7 @@ public class SpotifyController {
         SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
         String text1 = "Over the past 6 months, user's top songs are " + topTrackLongTerm.get(0).getName() + " by "+ topTrackLongTerm.get(0).getArtists().get(0) + ", " + topTrackLongTerm.get(1).getName() + " by "+ topTrackLongTerm.get(1).getArtists().get(0) + ", " + topTrackLongTerm.get(2).getName() + " by "+ topTrackLongTerm.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
         geminiService.runAIService(text1);
-        return new RedirectView("/done");
+        return new RedirectView("/home");
     }
 
     @GetMapping("/shorterm")
@@ -140,7 +131,35 @@ public class SpotifyController {
         SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
         String text1 = "Over the past month, user's top songs are " + topTrackLongTerm.get(0).getName() + " by "+ topTrackLongTerm.get(0).getArtists().get(0) + ", " + topTrackLongTerm.get(1).getName() + " by "+ topTrackLongTerm.get(1).getArtists().get(0) + ", " + topTrackLongTerm.get(2).getName() + " by "+ topTrackLongTerm.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
         geminiService.runAIService(text1);
-        return new RedirectView("/done");
+        return new RedirectView("/home");
     }
+
+    @GetMapping("/analyze")
+    public RedirectView analyze(@RequestParam(value = "period", required = false) String period) throws IOException {
+        logger.info("Analyzing with period: " + period);
+
+        if (period == null) {
+            logger.error("No period specified.");
+            return new RedirectView("/error");
+        }
+
+        switch (period) {
+            case "shortterm":
+                logger.info("Redirecting to /shorterm analysis");
+                return new RedirectView("/shorterm");
+            case "mediumterm":
+                logger.info("Redirecting to /mediumterm analysis");
+                return new RedirectView("/mediumterm");
+            case "longterm":
+                logger.info("Redirecting to /longterm analysis");
+                return new RedirectView("/longterm");
+            default:
+                logger.error("Invalid period selected: " + period);
+                return new RedirectView("/error");
+        }
+    }
+
+
+
 
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+</head>
+<body>
+<h1>Spotify Analysis</h1>
+
+<form action="/analyze" method="get">
+  <label for="period">Select Time Period:</label>
+  <select name="period" id="period" required>
+    <option value="" disabled selected>Select a period</option>
+    <option value="shortterm">Past Month</option>
+    <option value="mediumterm">Past 6 Months</option>
+    <option value="longterm">Past Year</option>
+  </select>
+  <button type="submit">Analyze</button>
+</form>
+</body>
+</html>
+
+
+
