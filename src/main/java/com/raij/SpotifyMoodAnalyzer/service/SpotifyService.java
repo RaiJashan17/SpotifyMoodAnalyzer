@@ -26,6 +26,7 @@ public class SpotifyService {
     @Autowired
     private RestTemplate restTemplate;
 
+
     public SpotifyTrack getLastPlayedTrack(String accessToken) {
         String url = "https://api.spotify.com/v1/me/player/recently-played?limit=1";
 
