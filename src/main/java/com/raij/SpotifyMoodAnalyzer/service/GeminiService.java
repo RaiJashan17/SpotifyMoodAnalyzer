@@ -38,7 +38,7 @@ public class GeminiService {
            GenerationConfig generationConfig =
                    GenerationConfig.newBuilder()
                            .setMaxOutputTokens(8192)
-                           .setTemperature(2F)
+                           .setTemperature(1.5F)
                            .setTopP(0.95F)
                            .build();
            List<SafetySetting> safetySettings = Arrays.asList(
