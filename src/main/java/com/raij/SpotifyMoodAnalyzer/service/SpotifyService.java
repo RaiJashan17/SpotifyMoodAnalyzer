@@ -249,7 +249,7 @@ public class SpotifyService {
         return null; // Handle cases where no track is found
     }
 
-    public SongFeatures getOneSongFeatures(String accessToken, SpotifyTrack spotifyTrack){
+    public SongFeatures getOneSongFeatures(String accessToken, SpotifyTrack spotifyTrack) {
 
         String apiUrl = "https://api.spotify.com/v1/audio-features/" + spotifyTrack.getId();
         HttpHeaders headers = new HttpHeaders();
@@ -267,12 +267,12 @@ public class SpotifyService {
         // Log the status code and body
         logger.info("Response Status Code: {}", responseEntity.getStatusCode());
         logger.info(responseEntity.getBody().toString());
-    return responseEntity.getBody();
+        return responseEntity.getBody();
     }
 
-    public List<SongFeatures> getAllSongFeatures(String accessToken, List<SpotifyTrackTopSongs> spotifyTrackList){
-        List<SongFeatures> songFeaturesList= new ArrayList<>();
-        for(SpotifyTrackTopSongs spotifyTrack: spotifyTrackList){
+    public List<SongFeatures> getAllSongFeatures(String accessToken, List<SpotifyTrackTopSongs> spotifyTrackList) {
+        List<SongFeatures> songFeaturesList = new ArrayList<>();
+        for (SpotifyTrackTopSongs spotifyTrack : spotifyTrackList) {
             String apiUrl = "https://api.spotify.com/v1/audio-features/" + spotifyTrack.getId();
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + accessToken);
@@ -295,7 +295,7 @@ public class SpotifyService {
         return songFeaturesList;
     }
 
-    public SongFeatures averageOfSongFeatures(List<SongFeatures> songFeaturesList){
+    public SongFeatures averageOfSongFeatures(List<SongFeatures> songFeaturesList) {
         SongFeatures songFeatures = new SongFeatures();
         Float acousticness = 0F;
         Float danceability = 0F;
@@ -305,25 +305,46 @@ public class SpotifyService {
         Float loudness = 0F;
         Float tempo = 0F;
         Float valence = 0F;
-        for (SongFeatures songFeature : songFeaturesList){
-            acousticness=acousticness+songFeature.getAcousticness();
-            danceability=danceability+songFeature.getDanceability();
-            energy=energy+songFeature.getEnergy();
-            instrumentalness=instrumentalness+songFeature.getInstrumentalness();
-            liveness=liveness+songFeature.getLiveness();
-            loudness=loudness+songFeature.getLoudness();
-            tempo= tempo+songFeature.getTempo();
-            valence=valence+songFeature.getValence();
+        for (SongFeatures songFeature : songFeaturesList) {
+            acousticness = acousticness + songFeature.getAcousticness();
+            danceability = danceability + songFeature.getDanceability();
+            energy = energy + songFeature.getEnergy();
+            instrumentalness = instrumentalness + songFeature.getInstrumentalness();
+            liveness = liveness + songFeature.getLiveness();
+            loudness = loudness + songFeature.getLoudness();
+            tempo = tempo + songFeature.getTempo();
+            valence = valence + songFeature.getValence();
         }
-        songFeatures.setAcousticness(acousticness/songFeaturesList.size());
-        songFeatures.setDanceability(danceability/songFeaturesList.size());
-        songFeatures.setEnergy(energy/songFeaturesList.size());
-        songFeatures.setInstrumentalness(instrumentalness/songFeaturesList.size());
-        songFeatures.setLiveness(liveness/songFeaturesList.size());
-        songFeatures.setLoudness(loudness/songFeaturesList.size());
-        songFeatures.setTempo(tempo/songFeaturesList.size());
-        songFeatures.setValence(valence/songFeaturesList.size());
+        songFeatures.setAcousticness(acousticness / songFeaturesList.size());
+        songFeatures.setDanceability(danceability / songFeaturesList.size());
+        songFeatures.setEnergy(energy / songFeaturesList.size());
+        songFeatures.setInstrumentalness(instrumentalness / songFeaturesList.size());
+        songFeatures.setLiveness(liveness / songFeaturesList.size());
+        songFeatures.setLoudness(loudness / songFeaturesList.size());
+        songFeatures.setTempo(tempo / songFeaturesList.size());
+        songFeatures.setValence(valence / songFeaturesList.size());
         logger.info(songFeatures.toString());
         return songFeatures;
+    }
+
+    public User getUser(String accessToken) {
+        String apiUrl = "https://api.spotify.com/v1/me/";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<User> responseEntity = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.GET,
+                entity,
+                User.class
+        );
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            User userResponse = responseEntity.getBody();
+            logger.info(userResponse.toString());
+            return userResponse;
+        }
+        return null;
     }
 }

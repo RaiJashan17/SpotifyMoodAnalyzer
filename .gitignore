@@ -35,3 +35,4 @@ build/
 ### Exclude These Files ###
 recently_played_tracks.json
 src/main/resources/application.properties
+src/main/java/com/raij/SpotifyMoodAnalyzer/config/AstraDBConfig.java
