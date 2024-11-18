@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Analysis Result</title>
+  <style>
+    /* Scrollable container for the response text */
+    .scrollable-container {
+        max-height: 70vh; /* Takes up at most 70% of the viewport height */
+        overflow-y: auto;
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+        padding: 15px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        line-height: 1.6;
+        white-space: pre-wrap; /* Preserve formatting and allow text wrapping */
+        word-wrap: break-word; /* Break long words if necessary */
+    }
+
+    /* Style for the button */
+    button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    /* Ensure the body does not overflow */
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+    }
+  </style>
+</head>
+<body>
+<h2>Analysis Result</h2>
+<!-- Scrollable container for the response text -->
+<div class="scrollable-container" th:text="${geminiResponse}">
+  Response will appear here
+</div>
+<br>
+<button onclick="window.location.href='/home'">Go Back to Home</button>
+</body>
+</html>
+
+
+
+

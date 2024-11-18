@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,8 @@ public class SpotifyController {
     private String redirectUri;
 
     private String accessToken;
+
+    private String geminiResponse;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -104,62 +107,97 @@ public class SpotifyController {
         return "home";
     }
 
-    @GetMapping("/longterm")
-    public RedirectView longTermAnalysis() throws IOException{
-        List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
-        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
-        SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
-        String text1 = "Over the past year, user's top songs are " + topTrackLongTerm.get(0).getName() + " by "+ topTrackLongTerm.get(0).getArtists().get(0) + ", " + topTrackLongTerm.get(1).getName() + " by "+ topTrackLongTerm.get(1).getArtists().get(0) + ", " + topTrackLongTerm.get(2).getName() + " by "+ topTrackLongTerm.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
-        geminiService.runAIService(text1);
-        return new RedirectView("/home");
-    }
-
-    @GetMapping("/mediumterm")
-    public RedirectView mediumTermAnalysis() throws IOException{
-        List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserMediumTerm50TopSongs(accessToken);
-        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
-        SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
-        String text1 = "Over the past 6 months, user's top songs are " + topTrackLongTerm.get(0).getName() + " by "+ topTrackLongTerm.get(0).getArtists().get(0) + ", " + topTrackLongTerm.get(1).getName() + " by "+ topTrackLongTerm.get(1).getArtists().get(0) + ", " + topTrackLongTerm.get(2).getName() + " by "+ topTrackLongTerm.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
-        geminiService.runAIService(text1);
-        return new RedirectView("/home");
-    }
-
-    @GetMapping("/shorterm")
-    public RedirectView shortTermAnalysis() throws IOException{
-        List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserShortTerm50TopSongs(accessToken);
-        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
-        SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
-        String text1 = "Over the past month, user's top songs are " + topTrackLongTerm.get(0).getName() + " by "+ topTrackLongTerm.get(0).getArtists().get(0) + ", " + topTrackLongTerm.get(1).getName() + " by "+ topTrackLongTerm.get(1).getArtists().get(0) + ", " + topTrackLongTerm.get(2).getName() + " by "+ topTrackLongTerm.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
-        geminiService.runAIService(text1);
-        return new RedirectView("/home");
-    }
+//    @GetMapping("/longterm")
+//    public RedirectView longTermAnalysis() throws IOException{
+//        List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserLongTerm50TopSongs(accessToken);
+//        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
+//        SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
+//        String text1 = "Over the past year, user's top songs are " + topTrackLongTerm.get(0).getName() + " by "+ topTrackLongTerm.get(0).getArtists().get(0) + ", " + topTrackLongTerm.get(1).getName() + " by "+ topTrackLongTerm.get(1).getArtists().get(0) + ", " + topTrackLongTerm.get(2).getName() + " by "+ topTrackLongTerm.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
+//        geminiService.runAIService(text1);
+//        return new RedirectView("/home");
+//    }
+//
+//    @GetMapping("/mediumterm")
+//    public RedirectView mediumTermAnalysis() throws IOException{
+//        List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserMediumTerm50TopSongs(accessToken);
+//        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
+//        SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
+//        String text1 = "Over the past 6 months, user's top songs are " + topTrackLongTerm.get(0).getName() + " by "+ topTrackLongTerm.get(0).getArtists().get(0) + ", " + topTrackLongTerm.get(1).getName() + " by "+ topTrackLongTerm.get(1).getArtists().get(0) + ", " + topTrackLongTerm.get(2).getName() + " by "+ topTrackLongTerm.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
+//        geminiService.runAIService(text1);
+//        return new RedirectView("/home");
+//    }
+//
+//    @GetMapping("/shorterm")
+//    public RedirectView shortTermAnalysis() throws IOException{
+//        List<SpotifyTrackTopSongs> topTrackLongTerm = spotifyService.getUserShortTerm50TopSongs(accessToken);
+//        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTrackLongTerm);
+//        SongFeatures songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
+//        String text1 = "Over the past month, user's top songs are " + topTrackLongTerm.get(0).getName() + " by "+ topTrackLongTerm.get(0).getArtists().get(0) + ", " + topTrackLongTerm.get(1).getName() + " by "+ topTrackLongTerm.get(1).getArtists().get(0) + ", " + topTrackLongTerm.get(2).getName() + " by "+ topTrackLongTerm.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability, energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
+//        geminiService.runAIService(text1);
+//        return new RedirectView("/home");
+//    }
+//
+//    @GetMapping("/analyze")
+//    public RedirectView analyze(@RequestParam(value = "period", required = false) String period) throws IOException {
+//        logger.info("Analyzing with period: " + period);
+//
+//        if (period == null) {
+//            logger.error("No period specified.");
+//            return new RedirectView("/error");
+//        }
+//
+//        switch (period) {
+//            case "shortterm":
+//                logger.info("Redirecting to /shorterm analysis");
+//                return new RedirectView("/shorterm");
+//            case "mediumterm":
+//                logger.info("Redirecting to /mediumterm analysis");
+//                return new RedirectView("/mediumterm");
+//            case "longterm":
+//                logger.info("Redirecting to /longterm analysis");
+//                return new RedirectView("/longterm");
+//            default:
+//                logger.error("Invalid period selected: " + period);
+//                return new RedirectView("/error");
+//        }
+//    }
 
     @GetMapping("/analyze")
-    public RedirectView analyze(@RequestParam(value = "period", required = false) String period) throws IOException {
-        logger.info("Analyzing with period: " + period);
-
-        if (period == null) {
-            logger.error("No period specified.");
-            return new RedirectView("/error");
-        }
-
-        switch (period) {
-            case "shortterm":
-                logger.info("Redirecting to /shorterm analysis");
-                return new RedirectView("/shorterm");
-            case "mediumterm":
-                logger.info("Redirecting to /mediumterm analysis");
-                return new RedirectView("/mediumterm");
-            case "longterm":
-                logger.info("Redirecting to /longterm analysis");
-                return new RedirectView("/longterm");
-            default:
-                logger.error("Invalid period selected: " + period);
-                return new RedirectView("/error");
-        }
+    public String analyze(@RequestParam("period") String period, Model model) throws IOException {
+        String analysisResult = runAnalysis(period);
+        logger.info(analysisResult);
+        model.addAttribute("geminiResponse", analysisResult);
+        return "done"; // Make sure this matches your template file name (done.html)
     }
 
 
+    private String runAnalysis(String period) throws IOException {
+        List<SpotifyTrackTopSongs> topTracks;
+        switch (period) {
+            case "shortterm":
+                topTracks = spotifyService.getUserShortTerm50TopSongs(accessToken);
+                break;
+            case "mediumterm":
+                topTracks = spotifyService.getUserMediumTerm50TopSongs(accessToken);
+                break;
+            case "longterm":
+                topTracks = spotifyService.getUserLongTerm50TopSongs(accessToken);
+                break;
+            default:
+                return "Invalid period!";
+        }
 
+        List<SongFeatures> songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTracks);
+        SongFeatures avgFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
 
+        String text = "Top songs: " + topTracks.get(0).getName() + ", " + topTracks.get(1).getName() +
+                ", " + topTracks.get(2).getName() + ". Average song features: " +
+                "Acousticness: " + avgFeatures.getAcousticness() +
+                ", Energy: " + avgFeatures.getEnergy() +
+                ", Valence: " + avgFeatures.getValence();
+
+        // Send the analysis text to Gemini service
+        geminiResponse = geminiService.runAIService(text);
+        return geminiResponse;
+    }
 }

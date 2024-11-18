@@ -32,7 +32,7 @@ public class GeminiService {
 
     private static final Logger logger = LoggerFactory.getLogger(GeminiService.class);
 
-   public void runAIService(String text1) throws IOException {
+   public String runAIService(String text1) throws IOException {
        String generatedText = "";
        try (VertexAI vertexAi = new VertexAI("spotifymoodanaylzer", "us-west1"); ) {
            GenerationConfig generationConfig =
@@ -78,7 +78,8 @@ public class GeminiService {
            for (GenerateContentResponse response : responseStream) {
                generatedText += response.getCandidates(0).getContent().getParts(0).getText(); // Add newline for better readability
            }
-           logger.info(generatedText);
+           //logger.info(generatedText);
        }
+       return generatedText;
     }
 }
