@@ -327,24 +327,24 @@ public class SpotifyService {
         return songFeatures;
     }
 
-    public User getUser(String accessToken) {
-        String apiUrl = "https://api.spotify.com/v1/me/";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<User> responseEntity = restTemplate.exchange(
-                apiUrl,
-                HttpMethod.GET,
-                entity,
-                User.class
-        );
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            User userResponse = responseEntity.getBody();
-            logger.info(userResponse.toString());
-            return userResponse;
-        }
-        return null;
-    }
+//    public User getUser(String accessToken) {
+//        String apiUrl = "https://api.spotify.com/v1/me/";
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Authorization", "Bearer " + accessToken);
+//
+//        HttpEntity<String> entity = new HttpEntity<>(headers);
+//
+//        ResponseEntity<User> responseEntity = restTemplate.exchange(
+//                apiUrl,
+//                HttpMethod.GET,
+//                entity,
+//                User.class
+//        );
+//        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+//            User userResponse = responseEntity.getBody();
+//            logger.info(userResponse.toString());
+//            return userResponse;
+//        }
+//        return null;
+//    }
 }

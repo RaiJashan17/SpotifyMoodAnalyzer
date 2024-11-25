@@ -1,9 +1,6 @@
 package com.raij.SpotifyMoodAnalyzer.controller;
 
-import com.raij.SpotifyMoodAnalyzer.model.SongFeatures;
-import com.raij.SpotifyMoodAnalyzer.model.SpotifyTokenResponse;
-import com.raij.SpotifyMoodAnalyzer.model.SpotifyTrackTopSongs;
-import com.raij.SpotifyMoodAnalyzer.model.User;
+import com.raij.SpotifyMoodAnalyzer.model.*;
 import com.raij.SpotifyMoodAnalyzer.service.GeminiService;
 import com.raij.SpotifyMoodAnalyzer.service.SpotifyService;
 import org.slf4j.Logger;
@@ -122,7 +119,6 @@ public class SpotifyController {
         List<SongFeatures> songFeaturesList;
         SongFeatures songFeatures;
         String text;
-        User user;
         switch (period) {
             case "shortterm":
                 topTracks = spotifyService.getUserShortTerm50TopSongs(accessToken);
@@ -145,7 +141,7 @@ public class SpotifyController {
             default:
                 return "Error";
         }
-        user = spotifyService.getUser(accessToken);
+        //user = spotifyService.getUser(accessToken);
         // Send the analysis text to Gemini service
         geminiResponse = geminiService.runAIService(text);
         return geminiResponse;
