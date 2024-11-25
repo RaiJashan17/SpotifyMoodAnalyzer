@@ -34,4 +34,7 @@ build/
 
 ### Exclude These Files ###
 recently_played_tracks.json
+top_track_short_term.json
 src/main/resources/application.properties
+src/main/java/com/raij/SpotifyMoodAnalyzer/config/AstraDBConfig.java
+src/main/resources/secure-connect-spotifymoodanaylzer.zip
