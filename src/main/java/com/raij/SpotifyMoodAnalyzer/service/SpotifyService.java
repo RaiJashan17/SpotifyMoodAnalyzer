@@ -1,5 +1,7 @@
 package com.raij.SpotifyMoodAnalyzer.service;
 
+import com.raij.SpotifyMoodAnalyzer.database.User;
+import com.raij.SpotifyMoodAnalyzer.database.UserRepository;
 import com.raij.SpotifyMoodAnalyzer.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -25,6 +28,13 @@ public class SpotifyService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private final UserRepository userRepository;
+
+    public SpotifyService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
 
     public SpotifyTrack getLastPlayedTrack(String accessToken) {
@@ -346,5 +356,21 @@ public class SpotifyService {
             return userResponse;
         }
         return null;
+    }
+
+    public void saveUserData(UserInfo userInfo, Date date, SongFeatures songFeatures, String period){
+        User user=new User();
+        user.setUserId(userInfo.getUserId());
+        user.setCalendarDate(date);
+        user.setAcousticness(songFeatures.getAcousticness());
+        user.setDanceability(songFeatures.getDanceability());
+        user.setEnergy(songFeatures.getEnergy());
+        user.setInstrumentalness(songFeatures.getInstrumentalness());
+        user.setLiveness(songFeatures.getLiveness());
+        user.setLoudness(songFeatures.getLoudness());
+        user.setTempo(songFeatures.getTempo());
+        user.setValence(songFeatures.getValence());
+        user.setPeriod(period);
+        userRepository.save(user);
     }
 }

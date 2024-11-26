@@ -19,6 +19,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 
 
@@ -119,6 +120,8 @@ public class SpotifyController {
         List<SongFeatures> songFeaturesList;
         SongFeatures songFeatures;
         String text;
+        UserInfo userInfo;
+        Date date;
         switch (period) {
             case "shortterm":
                 topTracks = spotifyService.getUserShortTerm50TopSongs(accessToken);
@@ -141,7 +144,9 @@ public class SpotifyController {
             default:
                 return "Error";
         }
-        //user = spotifyService.getUser(accessToken);
+        userInfo = spotifyService.getUser(accessToken);
+        date = new Date();
+        spotifyService.saveUserData(userInfo, date, songFeatures, period);
         // Send the analysis text to Gemini service
         geminiResponse = geminiService.runAIService(text);
         return geminiResponse;

@@ -10,7 +10,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.Date;
 
-@Table(value = "music_by_user") @Getter @Setter @ToString
+@Table(value = "master") @Getter @Setter @ToString
 public class User {
     @PrimaryKeyColumn(name="user_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
     String userId;
