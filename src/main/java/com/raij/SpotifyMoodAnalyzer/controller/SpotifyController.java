@@ -1,5 +1,6 @@
 package com.raij.SpotifyMoodAnalyzer.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.raij.SpotifyMoodAnalyzer.model.*;
 import com.raij.SpotifyMoodAnalyzer.service.GeminiService;
 import com.raij.SpotifyMoodAnalyzer.service.SpotifyService;
@@ -20,7 +21,9 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -42,6 +45,11 @@ public class SpotifyController {
 
     @Value("${spotify.redirect-uri}")
     private String redirectUri;
+
+    @Value("${cynaite.token}")
+    private String cynAiteToken;
+
+    private String graphQLEndpoint = "https://api.cyanite.ai/graphql";
 
     private String accessToken;
 
@@ -101,18 +109,321 @@ public class SpotifyController {
         }
     }
 
+//    @GetMapping("/home")
+//    public RedirectView home(){
+//        return new RedirectView("/tea");
+//    }
+//    public String home() {
+//        return "home";
+//    }
+
     @GetMapping("/home")
-    public String home() {
-        return "home";
+    public void enqueueSpotifyTrack() throws Exception {
+        //input.setTrackId(spotifyService.getLastPlayedTrack(accessToken).getId());
+        // GraphQL mutation as a string
+        String songId="";
+        String mutation = "mutation SpotifyTrackEnqueueMutation($input: SpotifyTrackEnqueueInput!) {" +
+                "  spotifyTrackEnqueue(input: $input) {" +
+                "    __typename" +
+                "    ... on SpotifyTrackEnqueueSuccess {" +
+                "      enqueuedSpotifyTrack {" +
+                "        id" +
+                "        audioAnalysisV6 {" +
+                "          __typename" +
+                "        }" +
+                "      }" +
+                "    }" +
+                "    ... on Error {" +
+                "      message" +
+                "    }" +
+                "  }" +
+                "}";
+
+        // Prepare the variables
+        Map<String, Object> variables = new HashMap<>();
+        Map<String, Object> input = new HashMap<>();
+        input.put("spotifyTrackId", "2ePiBvKtQOCBHq9uOlwiiU");
+        variables.put("input", input); // input should be a map or object serialized to match the mutation's input type
+
+        // Construct the request body
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("query", mutation);
+        requestBody.put("variables", variables);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // If using a Bearer token
+        headers.setBearerAuth(cynAiteToken);
+        // If using an API key instead, something like:
+        // headers.set("x-api-key", cynAiteToken);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        // Execute the POST request
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(
+                graphQLEndpoint,
+                HttpMethod.POST,
+                requestEntity,
+                Map.class
+        );
+
+        Map<String, Object> response = responseEntity.getBody();
+        if (response == null) {
+            System.out.println("No response returned.");
+            return;
+        }
+
+        // Check for data or errors
+        if (response.containsKey("errors")) {
+            // If there's an errors field
+            System.out.println("Errors: " + response.get("errors"));
+        } else {
+            // Extract data from the response
+            Map data = (Map) response.get("data");
+            if (data != null) {
+                Map spotifyTrackEnqueue = (Map) data.get("spotifyTrackEnqueue");
+                if (spotifyTrackEnqueue != null) {
+                    String typename = (String) spotifyTrackEnqueue.get("__typename");
+                    if ("SpotifyTrackEnqueueSuccess".equals(typename)) {
+                        Map enqueuedSpotifyTrack = (Map) spotifyTrackEnqueue.get("enqueuedSpotifyTrack");
+                        songId= (String) enqueuedSpotifyTrack.get("id");
+                        System.out.println("Enqueued Track ID: " + enqueuedSpotifyTrack.get("id"));
+                        Map audioAnalysisV6 = (Map) enqueuedSpotifyTrack.get("audioAnalysisV6");
+                        System.out.println("Audio Analysis Type: " + audioAnalysisV6.get("__typename"));
+                    } else if ("Error".equals(typename)) {
+                        System.out.println("Error Message: " + spotifyTrackEnqueue.get("message"));
+                    }
+                }
+            }
+            printLibraryTrackInfo(songId);
+        }
+    }
+
+    public void printLibraryTrackInfo(String libraryTrackId) throws Exception {
+        // GraphQL query as a string
+        logger.info(libraryTrackId);
+        libraryTrackId="5NPe4fAhaMwcho571EJXDi";
+        String query = "query LibraryTrackQuery($libraryTrackId: ID!) {" +
+                "  libraryTrack(id: $libraryTrackId) {" +
+                "    __typename" +
+                "    ... on LibraryTrackNotFoundError {" +
+                "      message" +
+                "    }" +
+                "    ... on LibraryTrack {" +
+                "      id" +
+                "      title" +
+                "      audioAnalysisV6 {" +
+                "        __typename" +
+                "        ... on AudioAnalysisV6Finished {" +
+                "          result {" +
+                "            valence" +
+                "            arousal" +
+                "            mood {" +
+                "              aggressive" +
+                "              calm" +
+                "              chilled" +
+                "              dark" +
+                "              energetic" +
+                "              epic" +
+                "              happy" +
+                "              romantic" +
+                "              sad" +
+                "              scary" +
+                "              sexy" +
+                "              ethereal" +
+                "              uplifting" +
+                "            }" +
+                "            moodTags" +
+                "            moodMaxTimes {" +
+                "              mood" +
+                "              start" +
+                "              end" +
+                "            }" +
+                "            moodAdvanced {" +
+                "              anxious" +
+                "              barren" +
+                "              cold" +
+                "              creepy" +
+                "              dark" +
+                "              disturbing" +
+                "              eerie" +
+                "              evil" +
+                "              fearful" +
+                "              mysterious" +
+                "              nervous" +
+                "              restless" +
+                "              spooky" +
+                "              strange" +
+                "              supernatural" +
+                "              suspenseful" +
+                "              tense" +
+                "              weird" +
+                "              aggressive" +
+                "              agitated" +
+                "              angry" +
+                "              dangerous" +
+                "              fiery" +
+                "              intense" +
+                "              passionate" +
+                "              ponderous" +
+                "              violent" +
+                "              comedic" +
+                "              eccentric" +
+                "              funny" +
+                "              mischievous" +
+                "              quirky" +
+                "              whimsical" +
+                "              boisterous" +
+                "              boingy" +
+                "              bright" +
+                "              celebratory" +
+                "              cheerful" +
+                "              excited" +
+                "              feelGood" +
+                "              fun" +
+                "              happy" +
+                "              joyous" +
+                "              lighthearted" +
+                "              perky" +
+                "              playful" +
+                "              rollicking" +
+                "              upbeat" +
+                "              calm" +
+                "              contented" +
+                "              dreamy" +
+                "              introspective" +
+                "              laidBack" +
+                "              leisurely" +
+                "              lyrical" +
+                "              peaceful" +
+                "              quiet" +
+                "              relaxed" +
+                "              serene" +
+                "              soothing" +
+                "              spiritual" +
+                "              tranquil" +
+                "              bittersweet" +
+                "              blue" +
+                "              depressing" +
+                "              gloomy" +
+                "              heavy" +
+                "              lonely" +
+                "              melancholic" +
+                "              mournful" +
+                "              poignant" +
+                "              sad" +
+                "              frightening" +
+                "              horror" +
+                "              menacing" +
+                "              nightmarish" +
+                "              ominous" +
+                "              panicStricken" +
+                "              scary" +
+                "              concerned" +
+                "              determined" +
+                "              dignified" +
+                "              emotional" +
+                "              noble" +
+                "              serious" +
+                "              solemn" +
+                "              thoughtful" +
+                "              cool" +
+                "              seductive" +
+                "              sexy" +
+                "              adventurous" +
+                "              confident" +
+                "              courageous" +
+                "              resolute" +
+                "              energetic" +
+                "              epic" +
+                "              exciting" +
+                "              exhilarating" +
+                "              heroic" +
+                "              majestic" +
+                "              powerful" +
+                "              prestigious" +
+                "              relentless" +
+                "              strong" +
+                "              triumphant" +
+                "              victorious" +
+                "              delicate" +
+                "              graceful" +
+                "              hopeful" +
+                "              innocent" +
+                "              intimate" +
+                "              kind" +
+                "              light" +
+                "              loving" +
+                "              nostalgic" +
+                "              reflective" +
+                "              romantic" +
+                "              sentimental" +
+                "              soft" +
+                "              sweet" +
+                "              tender" +
+                "              warm" +
+                "              anthemic" +
+                "              aweInspiring" +
+                "              euphoric" +
+                "              inspirational" +
+                "              motivational" +
+                "              optimistic" +
+                "              positive" +
+                "              proud" +
+                "              soaring" +
+                "              uplifting" +
+                "            }" +
+                "            moodAdvancedTags" +
+                "          }" +
+                "        }" +
+                "      }" +
+                "    }" +
+                "  }" +
+                "}";
+
+        // Variables
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("libraryTrackId", libraryTrackId);
+
+        // Request Body
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("query", query);
+        requestBody.put("variables", variables);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(cynAiteToken); // If using Bearer token
+        // If using API key: headers.set("x-api-key", cynAiteToken);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(
+                graphQLEndpoint,
+                HttpMethod.POST,
+                requestEntity,
+                Map.class
+        );
+
+        Map response = responseEntity.getBody();
+        if (response == null) {
+            System.out.println("No response received.");
+            return;
+        }
+
+        // Print the entire response as-is for debugging
+        // Since you don't want to store it, just print:
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
+        System.out.println(jsonResponse);
     }
 
     @GetMapping("/analyze")
-    public String analyze(@RequestParam("period") String period, Model model) throws IOException {
-        String analysisResult = runAnalysis(period);
-        logger.info(analysisResult);
-        model.addAttribute("geminiResponse", analysisResult);
-        return "done"; // Make sure this matches your template file name (done.html)
-    }
+//    public String analyze(@RequestParam("period") String period, Model model) throws IOException {
+//        String analysisResult = runAnalysis(period);
+//        logger.info(analysisResult);
+//        model.addAttribute("geminiResponse", analysisResult);
+//        return "done"; // Make sure this matches your template file name (done.html)
+//    }
 
 
     private String runAnalysis(String period) throws IOException {
