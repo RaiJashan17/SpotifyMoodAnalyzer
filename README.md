@@ -1,5 +1,8 @@
 # SpotifyMoodAnalyzer
 
+## Change Scope of Project
+Since this project violates Spotify Developer's Terms and access to the API calls for audio analysis has been revoked, looking for an alternative API to get a track's analysis. Until a viable alternative is found, this project is currently on hold.
+
 ## Goal of Project
 The goal of this project is to take a user's Spotify data in the short-term (4 weeks), medium-term (6 months), and long-term (12 months). Using that data, find the averages of the song's features and hand that data over to an AI such as Gemini. The AI will analyze and then report to the user about how their music habits have changed, whether they are happier or sadder, and other features. My inspiration started from Obscurify (https://www.obscurifymusic.com/), but instead of using different users, I want to use AI.
 
