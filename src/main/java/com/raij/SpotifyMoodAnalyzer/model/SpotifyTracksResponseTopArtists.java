@@ -7,10 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter @Setter
-public class SpotifyTracksResponse {
-
+public class SpotifyTracksResponseTopArtists {
     @JsonProperty("items")
-    private List<SpotifyTrackWrapper> items;
-
+    List<SpotifyTrackTopArtists> items;
 }
-
