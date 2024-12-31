@@ -117,36 +117,43 @@ public class SpotifyController {
 
     private String runAnalysis(String period) throws IOException {
         List<SpotifyTrackTopSongs> topTracks;
-        List<SongFeatures> songFeaturesList;
-        SongFeatures songFeatures;
+        List<SpotifyTrackTopArtists> topArtists;
         String text;
         UserInfo userInfo;
         Date date;
         switch (period) {
             case "shortterm":
-                topTracks = spotifyService.getUserShortTerm50TopSongs(accessToken);
-                songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTracks);
-                songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
-                text = "Over the past month, user's top songs are " + topTracks.get(0).getName() + " by "+ topTracks.get(0).getArtists().get(0) + ", " + topTracks.get(1).getName() + " by "+ topTracks.get(1).getArtists().get(0) + ", " + topTracks.get(2).getName() + " by "+ topTracks.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability " + songFeatures.getDanceability() + " energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
+                topTracks = spotifyService.getUserShortTerm5TopSongs(accessToken);
+                topArtists = spotifyService.getUserShortTerm5TopArtists(accessToken);
+                text = "Over the past month, user's top tracks are: ";
                 break;
             case "mediumterm":
-                topTracks = spotifyService.getUserMediumTerm50TopSongs(accessToken);
-                songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTracks);
-                songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
-                text = "Over the past six months, user's top songs are " + topTracks.get(0).getName() + " by "+ topTracks.get(0).getArtists().get(0) + ", " + topTracks.get(1).getName() + " by "+ topTracks.get(1).getArtists().get(0) + ", " + topTracks.get(2).getName() + " by "+ topTracks.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() +  ", danceability " + songFeatures.getDanceability() + ", energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
+                topTracks = spotifyService.getUserMediumTerm5TopSongs(accessToken);
+                topArtists = spotifyService.getUserMediumTerm5TopArtists(accessToken);
+                text = "Over the past six month, user's top tracks are: ";
                 break;
             case "longterm":
-                topTracks = spotifyService.getUserLongTerm50TopSongs(accessToken);
-                songFeaturesList = spotifyService.getAllSongFeatures(accessToken, topTracks);
-                songFeatures = spotifyService.averageOfSongFeatures(songFeaturesList);
-                text = "Over the past year, user's top songs are " + topTracks.get(0).getName() + " by "+ topTracks.get(0).getArtists().get(0) + ", " + topTracks.get(1).getName() + " by "+ topTracks.get(1).getArtists().get(0) + ", " + topTracks.get(2).getName() + " by "+ topTracks.get(2).getArtists().get(0) + ".In addition, the average song acousticness " + songFeatures.getAcousticness() + ", danceability " + songFeatures.getDanceability() +" , energy " + songFeatures.getEnergy() + ", instrumentalness " + songFeatures.getInstrumentalness() + ", liveness " + songFeatures.getLiveness() + ", loudness " + songFeatures.getLoudness() + ",  tempo " + songFeatures.getTempo() +  ", and valence " + songFeatures.getValence() + ". Based on these music stats, how would you think this user is doing in terms of mood?";
+                topTracks = spotifyService.getUserLongTerm5TopSongs(accessToken);
+                topArtists = spotifyService.getUserLongTerm5TopArtists(accessToken);
+                text = "Over the past year, user's top tracks are: ";
                 break;
             default:
                 return "Error";
         }
+        for (int i = 0; i < 5; i++) {
+            text += topTracks.get(i).getName() + " by " + topTracks.get(i).getArtists().get(0).getName();
+            if (i < 4) text += ", ";
+        }
+        text += ". The user's top artists are: ";
+        for (int i = 0; i < 5; i++) {
+            text += topArtists.get(i).getName();
+            if (i < 4) text += ", ";
+        }
+        text += ". Based on these music stats, how would you think this user is doing in terms of mood?";
         userInfo = spotifyService.getUser(accessToken);
         date = new Date();
-        spotifyService.saveUserData(userInfo, date, songFeatures, period);
+        logger.info(text);
+        spotifyService.saveUserData(userInfo, date, period, topTracks, topArtists);
         // Send the analysis text to Gemini service
         geminiResponse = geminiService.runAIService(text);
         return geminiResponse;
