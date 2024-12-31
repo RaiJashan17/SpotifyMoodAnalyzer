@@ -1,38 +1,45 @@
 # SpotifyMoodAnalyzer
 
 ## Change Scope of Project
-Since this project violates Spotify Developer's Terms and access to the API calls for audio analysis has been revoked, looking for an alternative API to get a track's analysis. Until a viable alternative is found, this project is currently on hold.
+Did not find an alternative for audio analysis, only getting the user's top songs and artists, use Gemini's existing knowledge for anaylsis. 
 
 ## Goal of Project
-The goal of this project is to take a user's Spotify data in the short-term (4 weeks), medium-term (6 months), and long-term (12 months). Using that data, find the averages of the song's features and hand that data over to an AI such as Gemini. The AI will analyze and then report to the user about how their music habits have changed, whether they are happier or sadder, and other features. My inspiration started from Obscurify (https://www.obscurifymusic.com/), but instead of using different users, I want to use AI.
+The goal of this project is to take a user's Spotify data in the short-term (4 weeks), medium-term (6 months), and long-term (12 months). Using that data, the AI will analyze and then report to the user about how their music habits have changed, whether they are happier or sadder, and other features. My inspiration started from Obscurify (https://www.obscurifymusic.com/), but instead of using different users, I want to use generative AI.
 
 ## Current Progress
-Integrated Gemini, working on finetuning and working on adding some more methods for more comparisons such as comparing between terms. Considering adding Apache Kafka and a database to store past user data and use that for more data.
+Finetuning Gemini, read from the database to do comparisons based on past queries, integrate Last.FM data as well
 
 ## Example Output
-**What the data shows:** Your top songs, combined with the overall averages for acousticness, energy, danceability, and valence (a measure of musical positiveness), paint a picture of someone experiencing a blend of melancholic and anxious feelings.
+Your top songs and artists reveal a blend of upbeat, celebratory vibes with a potential undercurrent of introspection and maybe even some sadness.
 
-The high acousticness suggests a desire for introspection and perhaps some comfort in softer sounds. The lower energy and valence scores indicate a tendency towards calmer, potentially more subdued moods, potentially hinting at feelings of sadness or low energy.
+* **The Upbeat Side:**  Diljit Dosanjh features heavily, with several top tracks.  His music is often celebratory and energetic, suggesting times of joy, confidence, and possibly even a need for high energy and self-affirmation (indicated by repeated listening to his tracks).
 
-The slightly elevated danceability suggests an attempt to maybe counteract these feelings, perhaps an unconscious desire for some release or distraction.  The relatively high liveness could be associated with excitement and immersion when listening to your chosen songs; however, the energy scores show a disconnect to this; leading to an explanation of having these emotional highs and lows.
+* **The Introspective Side:** The presence of Coldplay (specifically "Man in the Moon") hints at moments of reflection and perhaps longing. This song carries a melancholy beauty which suggests there may have been periods of pensive contemplation and emotional depth. 
 
-Your average tempo sits comfortably in a moderate range. Neither especially fast or slow suggesting neither intense energy or extreme tiredness is consistently evident in the data provided.
+* **The Emotional Rollercoaster (Potential):**  Including artists like Halsey, Panic! At The Disco, and Fall Out Boy suggests that you enjoy exploring a range of emotional depth in music, sometimes leaning towards intense feelings, be it exhilaration, heartbreak, or angst. These are emotional groups whose music explores more nuanced or darker tones.
 
-The loudness is average (not exceptionally loud or quiet, and this again demonstrates moderation in feeling).  Finally the relatively high instrumentalness is more evidence towards contemplation and reflection, reflecting introspection found in higher acousticness ratings.
 
-**Overall Impression:**  While there are some potentially distracting or lifting factors present, it seems as if sadness and anxiety may be overarching themes currently. You seem to be internally processing difficult or overwhelming emotions but find an underlying desire to elevate your mood and have some time to engage with more light hearted and happy things in your life, which might be counteracting what's reflected in the higher prevalence of slightly slower, more introspective tunes you like listening to.
+**Overall, my initial impression is that your mood has been quite varied over the last year. You seem to be someone who experiences a full range of emotions.** The heavy concentration on Diljit Dosanjh could imply periods of needing that self-confidence boost and high energy music more than other periods, but it also co-exists with more melancholic choices.
 
-**Suggestions for Mood Improvement:**
 
-*   **Mindfulness and Self-Compassion:** Practicing mindfulness can help you become more aware of your emotions without judgment. Try meditation, deep breathing exercises, or simply taking time each day to observe your feelings. It is crucial for mental health to treat yourself with compassion; acknowledging difficulties without self criticism.
-*   **Physical Activity:** Even a short walk can do wonders for mood. Physical activity releases endorphins, which have mood-boosting effects.
-*   **Creative Expression:** Express your feelings creatively through writing, painting, drawing, or any other form of art that resonates with you.  This is a non-invasive therapy approach where expressing the inner self, in its whole raw reality, may help understand personal emotional status.
+**Recommendations to enhance mood:**
 
-**Music Recommendations:**
+It's impossible to give definite recommendations without further information. However, here are some general strategies based on my analysis:
 
-Given your current musical preferences, it might be beneficial to gradually introduce more upbeat and energetic music into your playlist. However, keep some calm, reflective music too. You want to foster emotional wellbeing not forcibly override existing emotions with an overwhelming counter-reaction. However gradual improvement would benefit a healthier emotional baseline:
 
-*   For uplifting moments, try some indie pop, mellow pop, funk and even some bright and uplifting electronic music
-*   For the calmer reflective moments, I might suggest focusing on slightly higher energy acoustic and calming ambient and electronic music.
+1. **Mindfulness of Emotional Shifts:** Try to pay attention to *when* you listen to certain artists or genres. This could indicate your mood or something else you are struggling with during certain periods of the year. Do you reach for Diljit Dosanjh when you feel down? Coldplay when needing emotional catharsis?
+2. **Diversification of Playlist:** Since your range of artists is so expansive, consider intentionally introducing genres or artists known for being calming or uplifting.   Maybe add some ambient electronic, Lo-fi hip hop or nature sounds for mindful listening during moments of stress or sadness, alongside what is currently being listened to. This balances out what has already been highlighted.
+3. **Explore Instrumental Music:** This may particularly suit quiet reflection when needing time to sit and digest any negative emotions experienced through more heavy artists such as Halsey or Panic! At The Disco.
 
-Remember, music is a powerful tool, and exploring different genres can contribute positively to your emotional wellbeing; it isn't a guaranteed solution, but it helps aid the improvement processes already started, along with the additional self-care therapies already introduced. Don't hesitate to seek support from a mental health professional if you are experiencing persistent sadness or anxiety.
+**Genre Recommendations based on what's identified:**
+
+Considering your current listening habits, here are some genre suggestions to broaden your emotional palette while acknowledging your present preferences:
+
+* **For Uplifting & Energetic Moods:**  Bhangra (if you enjoy the energetic side of Diljit Dosanjh),  Latin Pop (infectious rhythms and uplifting vibes).
+* **For Introspective & Calm Moods:**  Indie Folk,  Neo-Soul, or even Classical Music (think Erik Satie).
+* **For emotionally nuanced listening:**  Find indie pop and artists in similar lanes as the emotional side of artists currently listened to.  Listen to playlists of other artists associated with similar musicians (or ones discovered within similar taste recommendation platforms).  Explore different subgenres and playlists with similar aesthetics. 
+
+
+This analysis is a starting point. Music is highly personal, and its effect varies based on your current emotional state and how a song personally resonates with you. If you are struggling with feelings of ongoing depression, then please consider seeking help with therapy or similar professionals.
+
+
