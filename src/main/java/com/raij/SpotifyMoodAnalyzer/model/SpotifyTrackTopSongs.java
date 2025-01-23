@@ -1,13 +1,11 @@
 package com.raij.SpotifyMoodAnalyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
-@Getter @Setter @ToString
+@Getter @Setter @ToString @AllArgsConstructor
 public class SpotifyTrackTopSongs {
     @JsonProperty("name")
     private String name; // Track name
