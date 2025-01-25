@@ -129,7 +129,9 @@ public class SpotifyService {
         );
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             UserInfo userResponse = responseEntity.getBody();
-            return userResponse;
+            if (userResponse != null) {
+                return userResponse;
+            }
         }
         return null;
     }
@@ -216,6 +218,11 @@ public class SpotifyService {
     }
 
     public void saveUserData(UserInfo userInfo, Date date, String period, List<SpotifyTrackTopSongs> topSongs, List<SpotifyTrackTopArtists> topArtists){
+        User user=createUserData(userInfo, date, period, topSongs, topArtists);
+        userRepository.save(user);
+    }
+
+    public User createUserData(UserInfo userInfo, Date date, String period, List<SpotifyTrackTopSongs> topSongs, List<SpotifyTrackTopArtists> topArtists){
         User user=new User();
         user.setUserId(userInfo.getUserId());
         user.setCalendarDate(date);
@@ -230,6 +237,6 @@ public class SpotifyService {
         }
         user.setTopSongs(topSongNames);
         user.setTopArtists(topArtistNames);
-        userRepository.save(user);
+        return user;
     }
 }
