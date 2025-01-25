@@ -1,7 +1,5 @@
 package com.raij.SpotifyMoodAnalyzer.database;
 
-import com.raij.SpotifyMoodAnalyzer.model.SpotifyTrackTopArtists;
-import com.raij.SpotifyMoodAnalyzer.model.SpotifyTrackTopSongs;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

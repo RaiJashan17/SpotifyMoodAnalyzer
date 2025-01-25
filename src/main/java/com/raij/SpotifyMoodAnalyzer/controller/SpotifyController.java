@@ -1,5 +1,7 @@
 package com.raij.SpotifyMoodAnalyzer.controller;
 
+import com.raij.SpotifyMoodAnalyzer.database.User;
+import com.raij.SpotifyMoodAnalyzer.database.UserRepository;
 import com.raij.SpotifyMoodAnalyzer.model.*;
 import com.raij.SpotifyMoodAnalyzer.service.GeminiService;
 import com.raij.SpotifyMoodAnalyzer.service.SpotifyService;
@@ -46,6 +48,9 @@ public class SpotifyController {
     private String accessToken;
 
     private String geminiResponse;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private RestTemplate restTemplate;

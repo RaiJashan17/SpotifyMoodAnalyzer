@@ -1,12 +1,9 @@
 package com.raij.SpotifyMoodAnalyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-@Getter @Setter @ToString
+@Getter @Setter @ToString @AllArgsConstructor
 public class SpotifyTrackTopArtists {
 
     @JsonProperty("id")
